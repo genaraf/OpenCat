@@ -94,7 +94,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
 #ifndef MAIN_SKETCH
       servoPWMFreq = SERVO_FREQ;
       b_offset = servoPWMFreq / DEFAULT_FREQ * SERVOMIN;
-      EEPROM.update(B_OFFSET, byte(b_offset / 10));
+      EEPROMupdate(B_OFFSET, byte(b_offset / 10));
       delay(5);
       k_us2pulse = microsecondsToPulse(1);
       //pulse = angle * k_angle2pulse + b_offset
@@ -146,7 +146,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
     }
 #endif
     void writeAngle(uint8_t servoNum, float angle) {
-      int clipped = min(max(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10, 500), 2500);
+      int clipped = min(max(float(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2)) / 1000.0 * angle + float((byte)eeprom(B_OFFSET)) * 10.0, 500.0), 2500.0);
       setPWM(eeprom(PWM_PIN, servoNum), 0, clipped);
       //      if (servoNum == 1) {
       //        Serial.print(servoNum); Serial.print('\t');

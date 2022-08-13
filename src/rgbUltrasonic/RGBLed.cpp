@@ -1,3 +1,4 @@
+#if 0
 #include "RGBLed.h"
 
 /**
@@ -494,3 +495,4 @@ RGBLed::~RGBLed(void)
   free(pixels_bak);
   pixels_bak = NULL;
 }
+#endif

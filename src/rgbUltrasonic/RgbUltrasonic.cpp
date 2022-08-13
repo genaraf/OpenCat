@@ -1,3 +1,5 @@
+#if 0
+
 #include "RgbUltrasonic.h"
 
 RgbUltrasonic::RgbUltrasonic(byte signal_pin, byte rgb_pin)
@@ -55,13 +57,13 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
             }
             for (byte i = 5; i < 120; i++) {
 //                SetRgbColor(index, (i<<16)|(i<<8)|i);
-                long color = (max(rgb[0]-i,5) << 16) + (max(rgb[1]-i,5) << 8) + max(rgb[2]-i,5);
+                long color = (max(rgb[0]-i,(long int)5) << 16) + (max(rgb[1]-i,(long int)5) << 8) + max(rgb[2]-i,(long int)5);
                 SetRgbColor(index, color);
                 delay((i < 18) ? 18: (256/i));
             }
             for (byte i = 120; i >= 5; i--) {
 //                SetRgbColor(index, (i<<16)|(i<<8)|i);
-                long color = (max(rgb[0]-i,5) << 16) + (max(rgb[1]-i,5) << 8) + max(rgb[2]-i,5);
+                long color = (max(rgb[0]-i,(long int)5) << 16) + (max(rgb[1]-i,(long int)5) << 8) + max(rgb[2]-i,(long int)5);
                 SetRgbColor(index, color);
                 delay((i < 18) ? 18: (256/i));
             }
@@ -102,3 +104,4 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
             break;
     }
 }
+#endif

@@ -73,13 +73,14 @@ bool ld3320_config_mode(E_WORK_MODE m)
 bool ld3320_clear(void)
 {
 	WireWriteByte(VOICE_ERASE_REG);
+    return true;
 }
 
 bool ld3320_reset(void)
 {
   WireWriteByte(VOICE_RESET_REG);
   delay(300);
-
+  return true;
 }
 
 bool ld3320_asr_start(void)
@@ -108,7 +109,7 @@ bool ld3320_add_words(unsigned char idNum, const char *words)
     Wire.beginTransmission(VOICE_IIC_ADDR);
     Wire.write(VOICE_ADD_WORDS_REG);
     Wire.write(idNum);
-    Wire.write(words, strlen(words));
+    Wire.write((const uint8_t*)words, strlen(words));
     if (Wire.endTransmission() != 0) {
         delay(10);
         return false;

@@ -1,11 +1,17 @@
 
+// EEPROM update function for esp32
+void EEPROMupdate(int p_address, byte value) {
+  byte oldVal = EEPROM.read(p_address);
+  if(oldVal != value)
+      EEPROM.write(p_address, value);
+}
 
 void EEPROMWriteInt(int p_address, int p_value)
 {
   byte lowByte = ((p_value >> 0) & 0xFF);
   byte highByte = ((p_value >> 8) & 0xFF);
-  EEPROM.update(p_address, lowByte);
-  EEPROM.update(p_address + 1, highByte);
+  EEPROMupdate(p_address, lowByte);
+  EEPROMupdate(p_address + 1, highByte);
   delay(10);
 }
 //This function will read a 2-byte integer from the EEPROM at the specified address and address + 1
@@ -22,7 +28,7 @@ inline int8_t eeprom(int address, byte x = 0, byte y = 0, byte yDim = 1) {
 
 void flushEEPROM(char b = -1) {
   for (int j = 0; j < 1024; j++) {
-    EEPROM.update(j, b);
+    EEPROMupdate(j, b);
   }
 }
 
@@ -47,16 +53,16 @@ template <typename T> void printEEPROMList(int EEaddress, byte len = DOF) {
 
 void saveCalib(int8_t *var) {
   for (byte i = 0; i < DOF; i++) {
-    EEPROM.update(CALIB + i, var[i]);
+    EEPROMupdate(CALIB + i, var[i]);
     //    calibratedZeroPosition[i] = EEPROMReadInt(ZERO_POSITIONS + i * 2) + float(var[i]) * eeprom(ROTATION_DIRECTION, i);
     EEPROMWriteInt(CALIBRATED_ZERO_POSITIONS + i * 2, EEPROMReadInt(ZERO_POSITIONS + i * 2) + float(var[i]) * eeprom(ROTATION_DIRECTION, i));
   }
 }
 
 void saveMelody(int &address, byte melody[], int len ) {
-  EEPROM.update(address--, len);
+  EEPROMupdate(address--, len);
   for (byte i = 0; i < len; i++)
-    EEPROM.update(address --, melody[i]);
+    EEPROMupdate(address --, melody[i]);
   PTL(address);
 }
 

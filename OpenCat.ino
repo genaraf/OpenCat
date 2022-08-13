@@ -37,18 +37,19 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-#define MAIN_SKETCH //the Petoi App only works when this mode is on
+//#define MAIN_SKETCH //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
 //#define NyBoard_V1_0
-#define NyBoard_V1_1
+//#define NyBoard_V1_1
 //#define NyBoard_V1_2
+#define M5AtomBoard
 
 //you can also activate the following modes (they will disable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
@@ -72,6 +73,9 @@
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(2);
+#ifdef M5AtomBoard
+  M5.begin(true, true, true); //Init Atom-Matrix(Initialize serial port, LED matrix).  
+#else  
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
@@ -80,17 +84,17 @@ void setup() {
   //#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   //  Fastwire::setup(400, true);
   //#endif
-
+#endif
   //----------------------------------
 #ifdef MAIN_SKETCH  // **
   PTL('k');
 #ifdef GYRO_PIN
   imuSetup();
-#endif
+#endif */ GYRO_PIN */
 #ifdef IR_PIN
   irrecv.enableIRIn(); // Start the receiver
   gait.reserve(4);
-#endif
+#endif /* IR_PIN */
 
 #ifdef LED_PIN
   pinMode(LED_PIN, OUTPUT);
@@ -107,7 +111,12 @@ void setup() {
     randomBase += choiceWeight[i];
   }
 #endif
+
+#ifdef M5AtomBoard
+  randomSeed(esp_random());
+#else
   randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
+#endif
 
 #ifdef VOICE
   voiceSetup();

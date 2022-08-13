@@ -1,6 +1,10 @@
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
+#ifdef M5AtomBoard
+#include <M5Atom.h>
+#endif
+
 #define IR_PIN    4   // Signal Pin of IR receiver to Arduino Digital Pin 4
 // -----------------------------------------------------------------------
 #define BUZZER    5
@@ -126,6 +130,26 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define LED_PIN 3
 #define NEOPIXEL_PIN 10 //the code for NeoPixels have to be shrinked to fit in the board
 #define NUMPIXELS 1
+#elif defined M5AtomBoard
+#undef IR_PIN
+#undef BUZZER 
+#undef SOUND
+#undef LIGHT
+
+#define BUZZER 22
+
+byte pwm_pin[] = {12, 11, 4, 3,
+                  13, 10, 5, 2,
+                  14, 9, 6, 1,
+                  15, 8, 7, 0
+                 };
+//#define VOLTAGE_DETECTION_PIN A7
+//#define LOW_VOLTAGE 650
+#define DEVICE_ADDRESS 0x50
+#define BAUD_RATE 115200
+//#define LED_PIN 3
+//#define NEOPIXEL_PIN 10 //the code for NeoPixels have to be shrinked to fit in the board
+//#define NUMPIXELS 1
 #endif
 
 #ifdef NYBBLE
@@ -375,7 +399,11 @@ template <typename T> void arrayNCPY(T * destination, const T * source, int len)
 #include "io.h"
 
 #ifdef GYRO_PIN
+#ifdef M5AtomBoard
+#include "m5imu.h"
+#else
 #include "imu.h"
+#endif
 #endif
 
 #include "PCA9685servo.h"

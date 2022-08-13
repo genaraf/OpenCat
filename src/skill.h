@@ -94,18 +94,18 @@ class Skill {
       unsigned int i2cEepromAddress = INITIAL_SKILL_DATA_ADDRESS; //won't hurt if unused
 
       PTLF("Save skills");
-      EEPROM.update(NUM_SKILLS, sizeof(skillNameWithType) / 2);
+      EEPROMupdate(NUM_SKILLS, sizeof(skillNameWithType) / 2);
       for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {//save skill info to on-board EEPROM
         byte len = strlen(skillNameWithType[s]); //len includes type. the saved value doesn't
-        EEPROM.update(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
+        EEPROMupdate(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
         PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
         for (byte l = 0; l < len; l++) {
           PT(skillNameWithType[s][l]);
-          EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
+          EEPROMupdate(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
         }
         PTL();
         int8_t period = pgm_read_byte(progmemPointer[s]);
-        EEPROM.update(SKILLS + skillAddressShift++, period);
+        EEPROMupdate(SKILLS + skillAddressShift++, period);
 
         //PTL("Current EEPROM address is " + String(SKILLS + skillAddressShift));
 #ifdef I2C_EEPROM
@@ -145,9 +145,9 @@ class Skill {
         //      PT((char)EEPROM.read(SKILLS + skillAddressShift + n));
         skillAddressShift += nameLen;
         char skillType = EEPROM.read(SKILLS + skillAddressShift++);
-        //    PT(skillType);
-        //    PT('\t');
-        //    PTL((int8_t)EEPROM.read(SKILLS + skillAddressShift));
+            PT(skillType);
+            PT('\t');
+            PTL((int8_t)EEPROM.read(SKILLS + skillAddressShift));
 #ifdef I2C_EEPROM
         if (skillType == 'N') // the address of I(nstinct) has been written in previous operation: saveSkillNameFromProgmemToOnboardEEPROM() in instinct.ino
           // if skillType == N(ewbility), save pointer address of progmem data array to onboard eeprom.
@@ -160,7 +160,7 @@ class Skill {
 #endif
         skillAddressShift += 3;
       }
-      //  PTLF("Load finished!");
+      PTLF("Load finished!");
     }
 
     int lookupAddressByName(const char* skillName) {
@@ -443,7 +443,7 @@ int testEEPROM(char* skillData) {
 
 #ifndef MAIN_SKETCH
 void writeConst() {
-  //  flushEEPROM();
+//  flushEEPROM();
   beep(20); 
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
@@ -461,15 +461,15 @@ void writeConst() {
   for (byte i = 0; i < DOF; i++) {
 #ifndef AUTO_INIT
     if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y') {
-      EEPROM.update(CALIB + i, servoCalib[i]);
+      EEPROMupdate(CALIB + i, servoCalib[i]);
       delay(10);
     }
 #endif
-    EEPROM.update(PWM_PIN + i, pwm_pin[i]);
-    EEPROM.update(MID_SHIFT + i, middleShift[i]);
-    EEPROM.update(ROTATION_DIRECTION + i, rotationDirection[i]);
+    EEPROMupdate(PWM_PIN + i, pwm_pin[i]);
+    EEPROMupdate(MID_SHIFT + i, middleShift[i]);
+    EEPROMupdate(ROTATION_DIRECTION + i, rotationDirection[i]);
     for (byte j = 0; j < 2; j++) {
-      EEPROM.update(ADAPT_PARAM + i * 2 + j, (int8_t)round(adaptiveParameterArray[i][j]));
+      EEPROMupdate(ADAPT_PARAM + i * 2 + j, (int8_t)round(adaptiveParameterArray[i][j]));
       EEPROMWriteInt(ANGLE_LIMIT + i * 4 + j * 2, angleLimit[i][j]);
     }
   }

@@ -2,11 +2,15 @@
 //modified by Rongzhong Li for better demonstration.
 //Feb.16, 2021
 
-#include "rgbUltrasonic/RgbUltrasonic.h"
-
-RgbUltrasonic mRUS04(6, 7);//(signal, RGB)
-//RgbUltrasonic mRUS04(8, 9);//(signal, RGB)
-//The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
+#ifdef M5AtomBoard
+#include "M5Ultrasonic/M5Ultrasonic.h"
+M5Ultrasonic mRUS04(6, 7);//(signal, RGB)
+#else
+    #include "rgbUltrasonic/RgbUltrasonic.h"
+    //The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
+    RgbUltrasonic mRUS04(6, 7);//(signal, RGB)
+    //RgbUltrasonic mRUS04(8, 9);//(signal, RGB)
+#endif
 
 long colors[] = {RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHITE};
 long ultraTimer;

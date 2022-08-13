@@ -95,6 +95,7 @@ bool restQ = false;
 int lightLag = 0;
 
 bool sensorConnectedQ(int n) {
+#if 0    
   float mean = 0;
   float bLag = analogRead(A3);
   for (int i = 0; i < READING_COUNT; i++) {
@@ -111,4 +112,7 @@ bool sensorConnectedQ(int n) {
     delay(1);
   }
   return sqrt(mean) > 20 ? true : false;
+#else
+    return false;
+#endif  
 }
